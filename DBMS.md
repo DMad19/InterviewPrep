@@ -75,3 +75,22 @@ conceptual model for designing databases.
 ##### Types
 1. Total participation (entity must participate in the relationship. Represented by double line in the er diagram)
 2. Partial participation (entity may or may not participate)
+
+#### Structural Constraints
+##### Nothing but cardinality + participation
+###### Will be represented in the (min,max) pairs
+eg. Book (0,1)  —— Borrowed_By ——  (0,5) Member  
+Book side: (0,1) → partial participation, one book max to one member.  
+Member side: (0,5) → partial participation, member can borrow up to 5 books.  
+
+## Generalisation, Specialization and Aggregation
+### Generalisation
+It's bottom up approach  
+When There are common attributes in the entities, we can create a new entity with those common attributes to reduce the redundancy
+
+## Specialization
+It's top down approach  
+When we need to divide the main entity to sub entities. We can use this technique to reduce the null values in the rows and make it normalized.  
+
+## Aggregation
+Treating relationship like an entity if needed.
