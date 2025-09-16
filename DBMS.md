@@ -94,3 +94,86 @@ When we need to divide the main entity to sub entities. We can use this techniqu
 
 ## Aggregation
 Treating relationship like an entity if needed.
+
+## Relational Model
+It organises data in structured way. It represents data in rows and columns called as tables, also called as relations.
+### Terminologies
+Relations - Tables  
+Relational Schema - Structure of a Relation / Table  
+Relational Instance - Set of values in a relationship at a particular instance of time  
+Attributes - Columns / Properties in a Relation / Table  
+Domain of a Attribute - Possible values a attribute can take  
+Tuple - Each row of a relationship is called tuple  
+Cardinality - Number of Distinct values in a column of a table  
+Degree - Number of columns in a table  
+Primary key - The attribute that can be used to uniquely identify a tuple/row in a relation/table.
+
+### Relational Algebra
+set of operations that can be performed on relations / tables  
+
+#### UNION
+It's combination of two relations with removed duplicates. Should have same columns/same datatype columns to apply union between two tables. (A U B)
+
+#### INTERSECTION
+It's common of two relations. (A ∩ B)
+
+#### DIFFERENCE
+It gives elements in first relation and not in second. (A - B)
+
+#### CARTESIAN PRODUCT
+It gives all the combinations of A and B. It's nothing but each row from table A paired with each row from table B. (A * B)
+
+#### SELECT
+Subset of tuples in a relation which satisfies given conditions. (σ A)
+
+#### PROJECTION
+Specified columns in a relation which satiesfies given conditions. (π(col1,col2…) A)
+
+#### JOINS
+It combines two or more relations / tables. There are mainly 4 types  
+1. Inner Join
+2. Outer Join
+3. Left Outer Join
+4. Right Outer Join
+
+#### DIVIDE
+From relation A (which has two attributes, say X and Y), find all X values that are associated with all Y values in B. (A / B)  
+Suppose we want: Which employees perform all required roles?
+
+##### A (EmployeeRoles: Emp → Role)  
+Emp     Role  
+Alice	Clerk  
+Alice	Manager  
+Bob	    Clerk  
+Bob	    Manager  
+Bob	    Salesman  
+Charlie	Clerk  
+
+###### B (RequiredRoles)
+Role
+Clerk
+Manager
+
+A/B gives the employees who have the role as both clerk and manager.  
+Result = {Alice, Bob}
+
+#### RENAME
+It changes the name of the relation. ρ(OLD RELATION, NEW RELATION)  
+
+### Codd's Twelve Rules of Relational Database
+E.F. Codd gave 12 rules basically to check whether DBMS have quality to become RDBMS.  
+But, it is rare to find that any product has fulfilled all the rules of Codd. They generally follow the 8-9 rules of Codd. E.F. Codd has proposed 13 rules which are popularly known as Codd's 12 rules.  
+
+* Rule 0: Foundation Rule- For any system that is advertised as, or claimed to be, a relational database management system, that system must be able to manage databases entirely through its relational capabilities.
+* Rule 1: Information Rule- Data stored in the Relational model must be a value of some cell of a table.
+* Rule 2: Guaranteed Access Rule- Every data element must be accessible by the table name, its primary key, and the name of the attribute whose value is to be determined.
+* Rule 3: Systematic Treatment of NULL values- NULL value in the database must only correspond to missing, unknown, or not applicable values.
+* Rule 4: Active Online Catalog- The structure of the database must be stored in an online catalog that can be queried by authorized users.
+* Rule 5: Comprehensive Data Sub-language Rule- A database should be accessible by a language supported for definition, manipulation, and transaction management operation.
+* Rule 6: View Updating Rule- Different views created for various purposes should be automatically updatable by the system.
+* Rule 7: High-level insert, update and delete rule- Relational Model should support insert, delete, update, etc. operations at each level of relations. Also, set operations like Union, Intersection, and minus should be supported.
+* Rule 8: Physical data independence- Any modification in the physical location of a table should not enforce modification at the application level.
+* Rule 9: Logical data independence- Any modification in the logical or conceptual schema of a table should not enforce modification at the application level. For example, merging two tables into one should not affect the application accessing it which is difficult to achieve.
+* Rule 10: Integrity Independence- Integrity constraints modified at the database level should not enforce modification at the application level.
+* Rule 11: Distribution Independence- Distribution of data over various locations should not be visible to end-users.
+* Rule 12: Non-Subversion Rule- Low-level access to data should not be able to bypass the integrity rule to change data.
