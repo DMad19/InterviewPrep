@@ -177,3 +177,20 @@ But, it is rare to find that any product has fulfilled all the rules of Codd. Th
 * Rule 10: Integrity Independence- Integrity constraints modified at the database level should not enforce modification at the application level.
 * Rule 11: Distribution Independence- Distribution of data over various locations should not be visible to end-users.
 * Rule 12: Non-Subversion Rule- Low-level access to data should not be able to bypass the integrity rule to change data.
+
+## Keys in Relational Model
+1. Candidate Key → Minimal unique identifiers.
+2. Super Key → Candidate key + extra attributes.
+3. Alternate Key → Candidate keys not used as primary.
+4. Foreign Key → Refers to another table’s primary key.
+5. Partial Key → Identifies only with help of another key.
+6. Primary Key → Chosen main key (unique + not null).
+7. Secondary Key → Used for searching, not uniqueness.
+8. Unique Key → Unique, but allows one NULL.
+9. Composite Key → Multiple attributes together form key.
+10. Surrogate Key → Artificial/system-generated key.
+
+## Mapping of ER Model to Relational Model
+1. 1:1 - if both are participating 100% we can merge into single table else two tables
+2. 1:N - two tables - second one should have foreign key which is nothing but primary key of the first
+3. M:N - three tables - one for relation between first and second
