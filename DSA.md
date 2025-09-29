@@ -5,3 +5,4 @@
 4. https://leetcode.com/problems/contiguous-array/
 5. https://www.geeksforgeeks.org/problems/count-subarray-with-given-xor/1
 6. https://www.geeksforgeeks.org/problems/difference-array/1
+7. https://www.geeksforgeeks.org/dsa/submatrix-sum-queries/
