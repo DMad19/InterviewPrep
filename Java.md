@@ -312,3 +312,100 @@ BeanFactory — basic container.
 ApplicationContext — advanced container with features like event handling, AOP, and internationalization.  
 
 "Spring uses IoC to manage object creation and lifecycle. I declare dependencies via DI, and the container wires them in. The ApplicationContext is the heart of this system—it scans, instantiates, and injects beans based on configuration or annotations."
+
+## Q20 Explain difference between Component, Service, Repository, Controller and RestController
+
+All four are Spring-managed components, but they serve different roles:
+@Component is a generic stereotype  
+@Service is for the business layer  
+@Repository is for the persistence layer (with exception translation)  
+@Controller is for the presentation layer  
+@RestController combines @Controller and @ResponseBody for REST APIs.
+
+## Q21 Explain Bean LifeCycle and Bean Scopes.
+
+Bean Lifecycle (Step-by-Step):  
+
+    When you start your Spring app, here’s what happens for each bean:  
+    Instantiation → Spring creates an instance of the bean class.  
+    Dependency Injection → Dependencies are injected (via constructor/setter/field).  
+    @PostConstruct → Any method annotated with this runs after dependencies are injected.  
+    Bean is Ready to Use → The application can now use it.  
+    @PreDestroy → Runs just before the bean is destroyed (e.g., app shutdown).  
+    Garbage Collected → Bean object is removed from memory.  
+
+Spring Bean Scopes in Web Applications:
+
+| Scope               | Description                              | Created                | Example               |
+|---------------------|------------------------------------------|------------------------|------------------------|
+| `singleton` (default) | One instance per Spring container        | On startup             | Services, Utilities    |
+| `prototype`         | New instance every time requested        | On request             | Stateful beans         |
+| `request`           | One instance per HTTP request (web-only) | Per HTTP request       | Controllers            |
+| `session`           | One per HTTP session (web-only)          | Per user session       | Session data           |
+| `application`       | One per servlet context (web-only)       | On servlet startup     | Shared resources       |
+
+
+## Q22 Explain @SpringBootApplication annotation
+| Annotation                 | Role                                                                                                                                                                                 |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `@Configuration`           | Marks the class as a source of Spring bean definitions.                                                                                                                              |
+| `@EnableAutoConfiguration` | Tells Spring Boot to automatically configure beans based on dependencies in the classpath (e.g., if `spring-boot-starter-web` is present → sets up Tomcat, DispatcherServlet, etc.). |
+| `@ComponentScan`           | Enables scanning for components (`@Component`, `@Service`, `@Repository`, `@Controller`) in the current package and subpackages.                                                     |
+
+# Q23 What are application.properties / application.yml files used for
+
+The application.properties or application.yml file is used in Spring Boot to externalize configuration.  
+It contains environment-specific settings like server port, database details, or custom keys.  
+It helps separate code from configuration, making applications easier to manage and deploy.
+
+## Q24 Explain Spring Autoconfiguration
+
+Spring Boot auto-configuration automatically sets up beans based on the libraries in the classpath.  
+It’s enabled by @EnableAutoConfiguration, which loads many configuration classes listed under META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports.  
+These classes use conditional annotations like @ConditionalOnClass and @ConditionalOnMissingBean to apply sensible defaults — which developers can override in application.properties.  
+
+## Q25 what are profiles in spring boot
+
+Spring Boot profiles allow environment-specific configurations.  
+You can define separate property files (like application-dev.properties, application-prod.properties)  
+and activate them using spring.profiles.active.  
+This helps manage different setups for dev, test, and production environments cleanly.  
+
+## Q26 What is the difference between bean and component
+Both @Bean and @Component create Spring-managed beans.  
+@Component is used on classes detected through component scanning,  
+while @Bean is used inside a @Configuration class to manually define a bean — typically for third-party classes or custom initialization logic.  
+
+## Q27 Explain CommandLineRunner and ApplicationRunner
+
+CommandLineRunner and ApplicationRunner are interfaces in Spring Boot that let you run custom logic after the application starts.  
+The difference is that CommandLineRunner takes String... args, while ApplicationRunner provides an ApplicationArguments object for easier argument handling.  
+They’re often used for initialization tasks or running startup scripts.  
+
+## Q28 What are Spring Boot Actuators?
+
+Spring Boot Actuator is a powerful production-ready feature that helps you monitor and manage your Spring Boot applications.
+It provides built-in endpoints that give insights into the health, metrics, environment, beans, and much more — all without writing extra code.
+
+## Q29 How do you configure logging in Spring Boot?
+
+Spring Boot uses Apache Commons Logging as a facade and delegates to the actual logging implementation—by default, that’s Logback.
+✅ Default Setup  
+Logback is auto-configured.  
+Logs go to console and optionally to files.  
+Configurable via application.properties or logback-spring.xml.  
+
+## Q30 Explain externalised configuration in spring
+In Spring Boot, externalized configuration means
+you can keep configuration outside your code —
+so you can change values without rebuilding or redeploying your app.
+
+| Priority | Source                                                  | Description                                      |
+|----------|---------------------------------------------------------|--------------------------------------------------|
+| 1        | `application.properties` / `application.yml` inside JAR | Default config bundled with the app              |
+| 2        | Profile-specific file (e.g., `application-dev.yml`)     | Overrides base config for active profile         |
+| 3        | Command-line arguments                                  | Passed via CLI or run config (`--key=value`)     |
+| 4        | OS environment variables                                | Set via shell or container environment           |
+| 5        | JVM system properties (`-Dkey=value`)                   | Passed via JVM flags                             |
+| 6        | External config files (outside the JAR)                 | Mounted or injected files (e.g., `/etc/config`)  |
+| 7        | Cloud Config Server or Vault                            | Centralized config for distributed systems       |
