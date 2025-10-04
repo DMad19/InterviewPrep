@@ -409,3 +409,63 @@ so you can change values without rebuilding or redeploying your app.
 | 5        | JVM system properties (`-Dkey=value`)                   | Passed via JVM flags                             |
 | 6        | External config files (outside the JAR)                 | Mounted or injected files (e.g., `/etc/config`)  |
 | 7        | Cloud Config Server or Vault                            | Centralized config for distributed systems       |
+
+## Q31 How do you secure a spring boot application
+
+A secure Spring Boot application applies:
+
+    Authentication to verify users  
+    Authorization to control access  
+    HTTPS for secure transport  
+    Externalized secrets for config safety  
+    Infrastructure hardening for runtime protection  
+    CSRF/session controls for web security  
+
+## Q32 What is JWT and how we use in Spring Security
+
+1. User logs in with credentials.  
+2. If valid → server generates a JWT using JwtUtil.  
+3. The token is returned in the response.  
+4. The client stores it (e.g., in localStorage or sessionStorage).  
+5. For every future request → client sends the token in header:  
+    Authorization: Bearer <token>  
+6. A JWT filter intercepts the request and validates it before it reaches the controller.
+
+## Q33 Difference between OAuth2 and JWT based authentication
+
+| Aspect               | OAuth2                                           | JWT-Based Authentication                          |
+|----------------------|--------------------------------------------------|---------------------------------------------------|
+| **Purpose**          | Delegates access to resources via third-party    | Authenticates users directly using signed tokens  |
+| **Flow**             | Redirect → Code → Token → User Info              | Login → Issue JWT → Send with each request        |
+| **Token Format**     | Can be JWT or opaque                             | Always JWT (JSON Web Token)                       |
+| **Authentication Source** | External provider (Google, Azure, etc.)   | Your own backend issues and validates tokens      |
+| **Session Handling** | Can be session-based or token-based              | Stateless—no session needed                       |
+| **Use Case**         | SSO, delegated access, third-party login         | REST APIs, microservices, mobile clients          |
+| **Validation**       | Often requires token introspection or user info | Local validation using signature and expiry       |
+
+## Q34 How does spring connects to databases
+1. Spring Boot reads DB config → creates DataSource
+2. Hibernate uses DataSource → builds EntityManagerFactory
+3. Spring scans for @Entity classes → maps to tables
+4. TransactionManager enables @Transactional
+5. Spring Data JPA exposes repositories
+
+## Q35 Difference between CRUDRepository, PagingAndSortingRepository, JPARepository
+
+| Feature                                 | CrudRepository | PagingAndSortingRepository | JpaRepository |
+| --------------------------------------- | -------------- | -------------------------- | ------------- |
+| **Basic CRUD**                          | ✅              | ✅                          | ✅             |
+| **Pagination**                          | ❌              | ✅                          | ✅             |
+| **Sorting**                             | ❌              | ✅                          | ✅             |
+| **Batch Operations**                    | ❌              | ❌                          | ✅             |
+| **JPA-specific methods (flush, batch)** | ❌              | ❌                          | ✅             |
+| **Most commonly used**                  | 🚫             | 🚫                         | ✅ ✅ ✅         |
+
+
+## Q36 How do you handle transactions in Spring Boot?
+Spring Boot uses Spring Transaction Management, built on top of the @Transactional annotation.
+
+✅ Spring creates a proxy for this method.  
+✅ It starts a transaction before executing it.  
+✅ If everything succeeds → commits the transaction.  
+✅ If an exception occurs → rolls back automatically.  
