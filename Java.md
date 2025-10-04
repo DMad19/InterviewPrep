@@ -469,3 +469,286 @@ Spring Boot uses Spring Transaction Management, built on top of the @Transaction
 ✅ It starts a transaction before executing it.  
 ✅ If everything succeeds → commits the transaction.  
 ✅ If an exception occurs → rolls back automatically.  
+
+
+## Q37 Explain transaction propogation 
+| Propagation Type       | Description                                                                  |
+| ---------------------- | ---------------------------------------------------------------------------- |
+| **REQUIRED** (default) | Join existing transaction if one exists; otherwise create a new one.         |
+| **REQUIRES_NEW**       | Always create a new transaction; suspend the existing one if any.            |
+| **SUPPORTS**           | Join existing transaction if one exists; otherwise run non-transactionally.  |
+| **NOT_SUPPORTED**      | Run non-transactionally; suspend existing transaction if any.                |
+| **MANDATORY**          | Must run within an existing transaction; throws exception if none exists.    |
+| **NEVER**              | Must run without a transaction; throws exception if a transaction exists.    |
+| **NESTED**             | Run within a nested transaction if one exists; otherwise acts like REQUIRED. |
+
+
+## Q38 Difference between lazyloading and eager loading
+When we have relationships between entities (e.g., @OneToMany, @ManyToOne), loading determines when related data is fetched from the database.
+
+⚙️ Eager Loading
+
+    Fetches related entities immediately when the parent entity is loaded.
+
+    Done in a single query or a join query (depending on JPA provider).
+
+    Uses:
+
+    @OneToMany(fetch = FetchType.EAGER)
+
+
+    Advantage: Data is available immediately without additional queries.
+
+    Disadvantage: Can load unnecessary data → performance overhead.
+
+    Example:
+    @Entity
+    public class Department {
+        @OneToMany(fetch = FetchType.EAGER)
+        private List<Employee> employees;
+    }
+
+
+When you load a Department, employees are fetched right away.
+
+⚙️ Lazy Loading
+
+    Fetches related entities only when accessed.
+
+    Default for collections in JPA (@OneToMany, @ManyToMany).
+
+    Uses:
+
+    @OneToMany(fetch = FetchType.LAZY)
+
+
+    Advantage: Performance-friendly — loads data only when needed.
+
+    Disadvantage: Needs a persistent context → may cause LazyInitializationException if accessed outside transaction/session.
+
+    Example:
+    @Entity
+    public class Department {
+        @OneToMany(fetch = FetchType.LAZY)
+        private List<Employee> employees;
+    }
+
+When you load a Department, employees are fetched only when you call getEmployees().
+
+
+## Q39 How will you enable caching in spring boot
+In Spring Boot, caching is implemented by enabling @EnableCaching, configuring a cache provider, and annotating service methods with @Cacheable, @CachePut, and @CacheEvict.
+
+@Cacheable
+
+    Used to cache the result of a method.
+
+    @Cacheable(value = "products", key = "#id")
+    public Product getProductById(Long id) {
+        simulateSlowService(); // simulate delay
+        return productRepository.findById(id).orElse(null);
+    }
+
+
+    ✅ The first call fetches from DB and caches result
+    ✅ Subsequent calls retrieve from cache
+
+@CachePut
+
+    Updates the cache without skipping the method execution.
+
+    @CachePut(value = "products", key = "#product.id")
+    public Product updateProduct(Product product) {
+        return productRepository.save(product);
+    }
+
+@CacheEvict
+
+    Removes an entry from the cache.
+
+    @CacheEvict(value = "products", key = "#id")
+    public void deleteProduct(Long id) {
+        productRepository.deleteById(id);
+    }
+
+🧩 Example Flow
+
+    First call to getProductById(1) → DB hit, cache store.
+
+    Second call to getProductById(1) → cache hit (no DB call).
+
+    Call to updateProduct(product) → updates DB and cache.
+
+    Call to deleteProduct(id) → removes DB entry and cache entry.
+
+## Q40 Explain Eureka Server and Spring Cloud Config
+In a microservices setup, we use Eureka Server as a service registry. Each service registers itself with Eureka on startup, and other services can discover it dynamically—no need to hardcode URLs. This enables load balancing, fault tolerance, and dynamic scaling. For example, if auth-service wants to call notification-service, it queries Eureka to get the current instance location.
+
+We also use Spring Cloud Config to centralize configuration management. Instead of maintaining separate config files in each service, we store them in a Git repo and serve them via a config server. Each service fetches its environment-specific config at startup. This makes it easy to manage profiles, secrets, and versioned changes across environments like dev, staging, and prod.
+
+Together, Eureka and Spring Cloud Config help us build scalable, maintainable, and cloud-native microservices—where services are loosely coupled, discoverable, and consistently configured.
+
+## Q41 Explain Interservice communication
+
+| Feature            | RestTemplate      | Feign Client            | WebClient        |
+| ------------------ | ----------------- | ----------------------- | ---------------- |
+| Type               | Imperative        | Declarative             | Reactive         |
+| Blocking           | Yes               | Yes                     | No               |
+| Ease of Use        | Medium            | Very Easy               | Medium           |
+| Eureka Integration | Manual            | Automatic               | Manual           |
+| Best For           | Simple REST calls | Most microservice calls | Reactive systems |
+
+## Q42 What is circuit breaker pattern
+
+Think of a circuit breaker in your home’s electrical board ⚙️.  
+If too much current flows → the circuit trips → prevents damage.
+
+Similarly, in microservices:
+
+When one service (say Payment Service) is down or slow,
+
+We don’t want other services (like Order Service) to keep calling it again and again — wasting threads & resources.
+
+So, the Circuit Breaker Pattern:
+
+Stops calls to a failing service temporarily to allow recovery and protect other services.
+
+| State              | Meaning                                                |
+| ------------------ | ------------------------------------------------------ |
+| **Closed**         | Everything is normal. Calls pass through.              |
+| **Open**           | Failures exceed threshold → stop calling the service.  |
+| **Half-Open**      | Test one or few calls to see if service has recovered. |
+| **Back to Closed** | If successful → resume normal operation.               |
+
+
+## Q43 Asynchronous Communication in Spring Boot
+
+| Type                     | Tool/Pattern               | Use Case                                  |
+|--------------------------|----------------------------|-------------------------------------------|
+| Inter-service (messaging)| Kafka, RabbitMQ            | Event-driven, decoupled services          |
+| Inter-service (reactive) | WebFlux + WebClient        | Non-blocking REST calls                   |
+| Internal async           | @Async, CompletableFuture, WebFlux | Background tasks, reactive pipelines |
+
+
+## Q44 What Is Global Exception Handling?
+
+When something goes wrong in your API (for example, invalid input, null pointer, DB failure, etc.), you don’t want to send messy stack traces or generic 500 errors back to the client.
+
+Instead, we use Global Exception Handling to:
+
+Catch all exceptions in one place
+
+Return a consistent, readable error response
+
+Keep controllers clean
+
+| Concept                                       | Annotation                 | Purpose                               |
+| --------------------------------------------- | -------------------------- | ------------------------------------- |
+| `@ControllerAdvice` / `@RestControllerAdvice` | Global error handling      | Catch all exceptions app-wide         |
+| `@ExceptionHandler`                           | On a method                | Handles specific exception types      |
+| `ResponseEntity`                              | Return wrapper             | Includes both body & HTTP status      |
+| Custom Exception                              | Extends `RuntimeException` | For meaningful domain-specific errors |
+
+
+## Q45 How does a typical Spring Boot + React/Angular full stack app flow work?
+
+| Layer    | Technology                   | Purpose                       |
+| -------- | ---------------------------- | ----------------------------- |
+| UI       | React / Angular              | User interface                |
+| API      | Spring Boot (REST)           | Business logic & data serving |
+| ORM      | Hibernate / JPA              | Data persistence              |
+| Security | JWT / OAuth2                 | Authentication                |
+| DB       | MySQL / PostgreSQL / MongoDB | Data storage                  |
+
+## Q46 How do you call a Spring Boot API from the frontend?
+
+Frontend → Backend → Database → Frontend
+
+For example:
+
+    User clicks “Get Products” in React.
+
+    React sends a GET request to Spring Boot → /api/products
+
+    Spring Boot returns JSON list of products.
+
+    React renders the products.
+
+Common Issue: CORS Error
+
+    If you see:
+
+    Access to fetch at 'http://localhost:8080/api/products' from origin 'http://localhost:3000' has been blocked by CORS policy
+
+
+    It’s because the browser blocks requests to a different origin.
+
+✅ Fix: Enable CORS in Spring Boot.  
+
+🔧 How to Enable CORS in Spring Boot
+
+    Option 1: Annotation-based (per controller)
+
+        @CrossOrigin(origins = "http://localhost:3000")
+        @RestController
+        public class ProductController { ... }
+
+    Option 2: Global Configuration
+
+        @Configuration
+        public class WebConfig implements WebMvcConfigurer {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:3000")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE");
+            }
+        }
+
+“Frontend calls backend via HTTP REST API using Axios or Fetch.”
+
+“Responses are in JSON, and state updates the UI.”
+
+“We must enable CORS to allow communication between different origins.”
+
+
+## Q47 Explain Session vs Token Based Authentication
+
+| Feature              | Session-Based              | Token-Based (JWT)                      |
+| -------------------- | -------------------------- | -------------------------------------- |
+| **State Management** | Server-side                | Client-side                            |
+| **Scalability**      | Low                        | High                                   |
+| **Storage**          | Session in memory/Redis    | Token in browser (localStorage/cookie) |
+| **Auth Check**       | Session lookup             | Token verification                     |
+| **Logout**           | Server invalidates session | Token expires or blacklisted           |
+| **Best For**         | Monolithic apps            | REST APIs, Microservices, SPAs         |
+
+## Q48 Ways to Enable CORS in Spring Boot
+
+| Method                         | Scope          | When to Use                       |
+| ------------------------------ | -------------- | --------------------------------- |
+| `@CrossOrigin`                 | Per controller | Small apps, specific APIs         |
+| `WebMvcConfigurer`             | Global         | Moderate-sized apps               |
+| `CorsFilter + Spring Security` | Full app       | Apps with authentication/security |
+
+## Q49 What are best practices for REST API design?
+
+“When designing REST APIs, I follow a set of best practices to ensure clarity, scalability, and maintainability. These practices help teams onboard faster, reduce bugs, and make integrations predictable.”
+
+🧩 1. Use Meaningful Resource Naming
+
+🧩 2. Follow HTTP Method Semantics
+
+🧩 3. Use Proper Status Codes
+
+🧩 4. Design Consistent Response Structure
+
+🧩 5. Use Versioning
+
+🧩 6. Validate Inputs and Handle Errors Gracefully
+
+🧩 7. Secure Your APIs
+
+🧩 8. Paginate Large Responses
+
+🧩 9. Use HATEOAS (Optional)
