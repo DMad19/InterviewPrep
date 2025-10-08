@@ -210,7 +210,7 @@ Heap Memory:
 | **PC Register**         | Address of current executing instruction | Thread start         | Thread end          | Per thread               |
 | **Native Method Stack** | Native (C/C++) method calls              | Thread start         | Thread end          | Per thread               |
 
-![Java Memory Model Image](java_memory_model.png)
+![Java Memory Model Image](/Java/assets/java_memory_model.png)
 
 ## Q17 Explain spring vs spring boot
 
