@@ -752,3 +752,28 @@ Common Issue: CORS Error
 🧩 8. Paginate Large Responses
 
 🧩 9. Use HATEOAS (Optional)
+
+## Q50 What's the difference between import and import static
+
+📦 import
+Purpose: Brings in classes, interfaces, enums from other packages.
+
+Usage: Lets you refer to types without fully qualifying them.
+
+Example:
+
+    import java.util.List;
+
+    List<String> names = new ArrayList<>();
+
+⚡ import static
+Purpose: Brings in static members (fields or methods) from a class.
+
+Usage: Lets you use static methods or constants without class prefix.
+
+Example:
+
+    import static java.lang.Math.PI;
+    import static java.lang.Math.pow;
+
+    double area = PI * pow(radius, 2);
