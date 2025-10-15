@@ -777,3 +777,46 @@ Example:
     import static java.lang.Math.pow;
 
     double area = PI * pow(radius, 2);
+
+## Q51 Can we return the child object for a method which actually returns parent object in the interface?
+
+Yes. 
+
+Example:
+
+    class A {
+    }
+
+    class B extends A {
+    }
+
+    interface Int {
+        A add(); // Method returns A
+    }
+
+    class IntImpl implements Int {
+        @Override
+        public B add() {
+            return new B(); // Valid: B is a subclass of A
+        }
+    }
+
+## Explain Exception Heirarchy in inheritance
+
+If there's method that doesn't throw exception in the parent class and child class throws exception for the same method, that'll give compile time exception. If child wanna throw, parent must and should throw the exception for the same method.
+
+But, It's not mandatory that child method to throw exception if parent throws.
+
+    public class A {
+        void hi() throws Exception{
+            System.out.println("parent");
+        }
+    }
+
+    public class B extends A{
+        @Override
+        void hi(){
+            System.out.println("child");
+        }
+
+    }
