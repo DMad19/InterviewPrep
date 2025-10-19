@@ -801,7 +801,7 @@ Example:
         }
     }
 
-## Explain Exception Heirarchy in inheritance
+## Q52 Explain Exception Heirarchy in inheritance
 
 If there's method that doesn't throw exception in the parent class and child class throws exception for the same method, that'll give compile time exception. If child wanna throw, parent must and should throw the exception for the same method.
 
@@ -819,4 +819,136 @@ But, It's not mandatory that child method to throw exception if parent throws.
             System.out.println("child");
         }
 
+    }
+## Q53 streams questions
+
+https://medium.com/@harendrakumarrajpoot5/java8-stream-api-commonly-asked-interview-questions-answer-9ab7a6800ff3
+
+## Q54 Can we override static and private methods?
+
+No. Static methods belongs to the class and not to the instance. So, we can just hide the method in the super class. The method will be called based on the reference and not on the object type. Private methods scope is until that class, hence it cannot be overridden.
+
+eg: 
+
+    public class Parent {
+        public static void m1(){
+            System.out.println("In parent m1");
+        }
+
+        private void m2(){
+            System.out.println("in parent m2");
+        }
+    }
+
+    public class Child extends Parent{
+        public static void m1(){
+            System.out.println("child m1");
+        }
+
+        private void m2(){
+            System.out.println("In child m2");
+        }
+    }
+
+## Q55 Difference between java7 and java8 interface.
+
+Java 7 have only the abstract methods in the interface while the Java 8 have default and static methods in it. Default methods helps to not force the implementation classes to implement the method and static methods are useful to make a common logic across all the implementations.
+
+## Q56 Explain about the contract of hashcode and equals.
+
+hashcode is for generating a unique code to identify a instance uniqueness while equals is to check whether two instance are equal or not based on content. It's not guaranteed that instances with hashcode are equal.
+
+## Q57 Are checked exceptions compile time exceptions. Will JVM throw them at compile time?
+
+No. JVM will not throw checked exceptions at compile time. JVM will check whether we handled them or not at compile time.
+
+## Q58 How to write custom exception.
+
+We need to create a class extending either Exception or RuntimeException
+    
+    public class CustomException extends Exception{
+        CustomException(String message){
+            super(message);
+        }
+    }
+
+## Q59 Will return statement in the finally overrides the return in the try block?
+
+Yes. It overrides.  
+
+eg:
+
+    public static void main(String[] args){
+        try {
+            return 1;
+        } catch (CustomException e) {
+            return 2;
+        } finally{
+            return 3;
+        }
+    }
+
+## Q60 What Is the String Constant Pool?
+
+It’s part of the heap memory, specifically managed by the JVM.  
+When you write a string literal like "hello", Java stores it in the String Constant Pool.  
+If another "hello" appears later, Java reuses the same object instead of creating a new one.  
+
+eg:
+
+
+    String a = "hello";
+    String b = "hello";
+    System.out.println(a == b); // true — both point to the same pool object
+
+    String c = new String("hello");
+    System.out.println(a == c); // false — 'c' is a new object on the heap
+
+    String d = new String("hello").intern();
+    System.out.println(a == d); // true
+
+## Q61 Why strings are immutable in java?
+1. Security: Prevent tampering in sensitive contexts
+2. Performance: Enables String Pooling
+3. Thread Safety: No need for synchronization
+4. HashCode Stability: Reliable keys in HashMap
+5. Predictable Behavior: No side effects
+
+## Q62 How to acheive mutable strings? Explain difference between StringBuilder, StringBuffer and Strings.
+
+![StringBuffer vs StringBuilder](assets/stringbufVSstringbuilder.png)
+
+## Q63 How to create custom immutable class
+
+steps:
+
+1. Make the class final
+2. Make all the variables final and private
+3. Don't use any setters
+4. initialize all the variables in the constructor
+5. Perform cloning of the mutable objects while returning from the getter method.
+
+## Q64 What Is a Marker Interface (aka Tagging Interface) and can we create custom Marker Interface?
+A marker interface is an interface that has no methods or fields — it’s used purely to tag a class with metadata so the JVM or frameworks can treat it differently.
+
+✅ Examples in Java:
+Interface	Purpose  
+Serializable	Marks a class as eligible for serialization  
+Cloneable	Marks a class as cloneable via Object.clone()  
+Remote	Marks a class for remote method invocation  
+These interfaces don’t define behavior — they signal intent.  
+
+✅ Can You Create Your Own Marker Interface?
+Yes, absolutely. You can define your own marker interface to tag classes for custom logic.
+
+Example:
+    public interface Auditable {} // marker interface
+
+    public class User implements Auditable {
+        private String name;
+    }
+    Then in your framework or utility:
+
+    if (obj instanceof Auditable) {
+        logAuditTrail(obj);
     }
